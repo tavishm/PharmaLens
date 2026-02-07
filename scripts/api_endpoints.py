@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import random
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_medicine_class(medicine_name):
     pass
@@ -40,29 +47,31 @@ def add_numbers(a: int, b: int):
     return {"operation": "add", "a": a, "b": b, "result": a + b}
 
 # 6. Random Stats Endpoint
+COUNTRIES = ["USA", "Canada", "UK", "Germany", "France", "Japan", "China", "India", "Brazil", "Australia", "Nigeria", "South Africa", "Egypt", "Madagascar", "Benin", "Algeria", "Chile", "Thailand", "Poland"]
+
 @app.get("/stats")
 def get_stats():
-    countries = ["USA", "Canada", "UK", "Germany", "France", "Japan", "China", "India", "Brazil", "Australia"]
-    stats = {
-        "countries": countries,
-        "Population_Growth": [random.random() for _ in countries],
-        "Internet_Penetration": [random.random() for _ in countries],
-        "GDP_Growth": [random.random() for _ in countries],
-        "Literacy_Rate": [random.random() for _ in countries],
-        "Urbanization_Rate": [random.random() for _ in countries],
-        "Employment_Rate": [random.random() for _ in countries]
+    return {
+        "countries": COUNTRIES,
+        "Population_Growth": [random.random() for _ in COUNTRIES],
+        "Internet_Penetration": [random.random() for _ in COUNTRIES],
+        "GDP_Growth": [random.random() for _ in COUNTRIES],
+        "Literacy_Rate": [random.random() for _ in COUNTRIES],
+        "Urbanization_Rate": [random.random() for _ in COUNTRIES],
+        "Employment_Rate": [random.random() for _ in COUNTRIES]
     }
-    return stats
 
 # 7. Medicine Stats Endpoint
 @app.get("/medicine_stats/{medicine_name}")
 def medicine_stats(medicine_name: str):
     return {
         "medicine": medicine_name,
-        "efficacy": random.random(),
-        "side_effects_rate": random.random(),
-        "market_availability": random.random(),
-        "average_cost": random.randint(10, 1000)
+        "countries": COUNTRIES,
+        "perception": [random.random() for _ in COUNTRIES],
+        "sideEffect": [random.random() for _ in COUNTRIES],
+        "access": [random.random() for _ in COUNTRIES],
+        "trust": [random.random() for _ in COUNTRIES],
+        "competition": [random.random() for _ in COUNTRIES]
     }
 
 if __name__ == "__main__":
