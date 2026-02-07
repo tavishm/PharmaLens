@@ -13,7 +13,7 @@ def load_data(input_dir):
         return
 
     total_inserted = 0
-    print(f"Loading data from {len(files)} files into database...")
+    #print(f"Loading data from {len(files)} files into database...")
     
     for filename in files:
         filepath = os.path.join(input_dir, filename)
@@ -23,7 +23,7 @@ def load_data(input_dir):
             for line in tqdm(f):
                 try:
                     record = json.loads(line)
-                    
+                    #print(record.get("geo"), record.get("time"))
                     # Ensure schema matches
                     db_record = {
                         "id": record.get("id"),
