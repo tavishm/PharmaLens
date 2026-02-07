@@ -1,10 +1,1 @@
-__pycache__/
-*.pyc
-.env
-data/
-outputs/
-.DS_Store
-venv/
-.env/
-.venv/
 medithon/

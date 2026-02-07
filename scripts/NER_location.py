@@ -49,13 +49,6 @@ def get_medicine_names(large_dataset):
 
 # --- Example Run ---
 if __name__ == "__main__":
-    my_data = [
-        "bro i need methamphetamines does anybody have crocin",
-        "The patient is on 50mg of Losartan.",
-        "Aspirin helps with the headache."
-    ]
-    
-    results = get_medicine_names(my_data)
-    
-    for i, meds in enumerate(results):
-        print(f"Doc {i}: {meds}")
+    text = "My GP in Pune said it’s standard here in Maharashtra. But in India it’s expensive."
+    loc = infer_location_from_text(text)
+    print(loc)
