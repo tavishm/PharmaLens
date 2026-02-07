@@ -1,0 +1,13 @@
+praw
+python-dotenv
+pandas
+tqdm
+requests
+beautifulsoup4
+lxml
+faker
+numpy
+playwright
+sentence-transformers
+scikit-learn
+datasets
