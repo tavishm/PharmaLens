@@ -4,3 +4,7 @@ __pycache__/
 data/
 outputs/
 .DS_Store
+venv/
+.env/
+.venv/
+medithon/
