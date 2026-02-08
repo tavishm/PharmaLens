@@ -11,22 +11,24 @@ interface WorldHeatMapProps {
   selectedCountry: string | null;
   onCountrySelect: (country: string | null) => void;
   selectedDrug: string;
+  drugStats: any;
 }
 
 interface CountryMetrics {
-  perception: number;
-  trust: number;
+  effectiveness: number;
+  expensiveness: number;
   access: number;
   sideEffect: number;
   competition: number;
+  medicallyIrrelevant: number;
 }
 
 // Enterprise color scale: deep blue → teal → amber → red
 const getHeatColor = (value: number): string => {
-  if (value >= 0.75) return '#0ea5e9'; // Deep cyan/blue
-  if (value >= 0.65) return '#14b8a6'; // Teal
-  if (value >= 0.55) return '#f59e0b'; // Amber
-  if (value >= 0.45) return '#f97316'; // Orange
+  if (value >= 0.4) return '#0ea5e9'; // Deep cyan/blue
+  if (value >= 0.25) return '#14b8a6'; // Teal
+  if (value >= 0.1) return '#f59e0b'; // Amber
+  if (value >= 0.05) return '#f97316'; // Orange
   return '#ef4444'; // Red
 };
 
@@ -50,46 +52,30 @@ const countryNameMap: Record<string, string> = {
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
-export default function WorldHeatMap({ selectedMetric, selectedCountry, onCountrySelect, selectedDrug }: WorldHeatMapProps) {
+export default function WorldHeatMap({ selectedMetric, selectedCountry, onCountrySelect, selectedDrug, drugStats }: WorldHeatMapProps) {
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [countryMetrics, setCountryMetrics] = useState<Record<string, CountryMetrics>>({});
-  const [loading, setLoading] = useState(false);
 
+  // Update metrics when drugStats changes
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`http://localhost:8000/medicine_stats/${selectedDrug}`);
-        const data = await response.json();
+    if (!drugStats) return;
 
-        console.log(data)
+    const metrics: Record<string, CountryMetrics> = {};
+    const countries = drugStats.countries;
 
-        const metrics: Record<string, CountryMetrics> = {};
-        const countries = data.countries;
-
-        countries.forEach((country: string, index: number) => {
-          // Normalize country name from API if need, simpler to just use API name
-          metrics[country] = {
-            perception: data.perception[index],
-            trust: data.trust[index],
-            access: data.access[index],
-            sideEffect: data.sideEffect[index],
-            competition: data.competition[index]
-          };
-        });
-        setCountryMetrics(metrics);
-      } catch (error) {
-        console.error("Error fetching medicine stats:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (selectedDrug) {
-      fetchData();
-    }
-  }, [selectedDrug]);
+    countries.forEach((country: string, index: number) => {
+      metrics[country] = {
+        effectiveness: drugStats.effectiveness[index],
+        expensiveness: drugStats.expensiveness[index],
+        access: drugStats.access[index],
+        sideEffect: drugStats.sideEffect[index],
+        competition: drugStats.competition[index],
+        medicallyIrrelevant: drugStats.medicallyIrrelevant[index]
+      };
+    });
+    setCountryMetrics(metrics);
+  }, [drugStats]);
 
 
   const getMetricValue = (countryName: string): number => {
@@ -111,17 +97,17 @@ export default function WorldHeatMap({ selectedMetric, selectedCountry, onCountr
     if (!metrics) return 0; // Default or 0
 
     switch (selectedMetric) {
-      case 'trust':
-        return metrics.trust;
+      case 'expensiveness':
+        return metrics.expensiveness;
       case 'access':
         return metrics.access;
       case 'sideEffect':
         return metrics.sideEffect;
       case 'competitive':
         return metrics.competition;
-      case 'perception':
+      case 'effectiveness':
       default:
-        return metrics.perception;
+        return metrics.effectiveness;
     }
   };
 

@@ -13,6 +13,7 @@ import requests
 import json
 import concurrent.futures
 import time
+import os
 
 # Import NER modules
 try:
@@ -164,7 +165,7 @@ Group: <group_text>
     
     # Try OpenRouter first, fallback to Gemini or just use one. The original used OpenRouter.
     # Using the same KEY/Model from original script for continuity.
-    OPENROUTER_API_KEY = "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"
+    OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
     OPENROUTER_MODEL = "arcee-ai/trinity-large-preview:free"
     
     headers = {
@@ -376,7 +377,7 @@ for p in post_data:
         p["id"],
         p["text"],
         p["locations"],
-        p["medicines"],
+        p["medicines"][0]["canonical_name"],
         p["time"],
         p["cluster_id"] if p["cluster_id"] != -1 else None
     ))

@@ -6,27 +6,15 @@ interface TopNavigationProps {
   onMetricChange: (metric: string) => void;
   selectedDrug: string;
   onDrugChange: (drug: string) => void;
+  medicineList: string[];
 }
 
 const metrics = [
-  { id: 'perception', label: 'Effectiveness perception' },
+  { id: 'effectiveness', label: 'Effectiveness' },
   { id: 'sideEffect', label: 'Side effect mention frequency' },
   { id: 'access', label: 'Access friction' },
-  { id: 'trust', label: 'Trust in evidence' },
+  { id: 'expensiveness', label: 'Affordability' },
   { id: 'competitive', label: 'Competitive pressure' },
-];
-
-const drugs = [
-  'Ozempic',
-  'Keytruda',
-  'Humira',
-  'Eliquis',
-  'Revlimid',
-  'Dupixent',
-  'Enbrel',
-  'Imbruvica',
-  'Opdivo',
-  'Xarelto'
 ];
 
 export default function TopNavigation({
@@ -34,11 +22,13 @@ export default function TopNavigation({
   onMetricChange,
   selectedDrug,
   onDrugChange,
+  medicineList,
 }: TopNavigationProps) {
   const [searchQuery, setSearchQuery] = useState(selectedDrug);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const filteredDrugs = drugs.filter(drug =>
+  // Filter based on the passed medicineList
+  const filteredDrugs = medicineList.filter(drug =>
     drug.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -58,7 +48,7 @@ export default function TopNavigation({
       {/* Left: Product Name and Selectors */}
       <div className="flex items-center gap-6">
         <h1 className="text-xl font-semibold tracking-tight">PharmaLens</h1>
-        
+
         {/* Drug Search Bar */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10" />
